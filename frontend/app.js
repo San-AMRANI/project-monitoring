@@ -92,3 +92,6 @@ randomBtn.addEventListener("click", loadRandom);
 allBtn.addEventListener("click", loadAll);
 
 loadHealth();
+
+// Export helpers to enable unit testing without a browser bundler.
+export { setError, setQuote, renderList, fetchJson, loadHealth, loadRandom, loadAll };
