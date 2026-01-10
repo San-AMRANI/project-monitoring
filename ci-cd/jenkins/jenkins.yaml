@@ -1,0 +1,50 @@
+jenkins:
+  systemMessage: "Shared Jenkins - DevOps Monitoring Project"
+
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: admin
+          password: "${JENKINS_ADMIN_PASSWORD}"
+
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
+
+  numExecutors: 0 
+
+  clouds:
+    - docker:
+        name: "docker"
+        dockerApi:
+          dockerHost:
+            uri: "unix:///var/run/docker.sock"
+        templates:
+          - labelString: "docker-agent"
+            dockerTemplateBase:
+              image: "jenkins/agent:latest"
+              privileged: true
+              user: "root"
+              mounts:
+                - "type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock"
+            remoteFs: "/home/jenkins/agent"
+            connector:
+              attach:
+                user: "root"
+            instanceCapStr: "10"
+            removeVolumes: true
+            pullStrategy: PULL_ALWAYS
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - string:
+              id: github-token
+              secret: "${GITHUB_TOKEN}"
+              scope: GLOBAL
+
+jobs:
+  - file: /var/jenkins_home/jobs.groovy

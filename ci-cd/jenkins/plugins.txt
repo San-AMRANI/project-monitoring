@@ -1,0 +1,10 @@
+configuration-as-code
+git
+workflow-aggregator
+workflow-multibranch
+job-dsl
+github-branch-source
+docker-plugin
+docker-workflow
+credentials-binding
+credentials
