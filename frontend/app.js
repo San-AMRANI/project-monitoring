@@ -1,4 +1,5 @@
-const API_BASE = window.API_BASE || "http://localhost:3000";
+// Vite loads variables from .env automatically
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:3000";
 
 const randomBtn = document.getElementById("random-btn");
 const allBtn = document.getElementById("all-btn");
