@@ -24,18 +24,20 @@ jenkins:
         templates:
           - labelString: "docker-agent"
             dockerTemplateBase:
-              image: "node:18-slim"
+              image: "jenkins/agent:latest"
               privileged: true
               user: "root"
               mounts:
                 - "type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock"
             remoteFs: "/home/jenkins/agent"
+            mode: EXCLUSIVE
             connector:
               attach:
                 user: "root"
             instanceCapStr: "10"
             removeVolumes: true
             pullStrategy: PULL_ALWAYS
+            pullTimeout: 300
 
 credentials:
   system:
