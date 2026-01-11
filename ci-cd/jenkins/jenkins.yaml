@@ -12,7 +12,6 @@ jenkins:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false
 
-
   numExecutors: 0 
 
   clouds:
