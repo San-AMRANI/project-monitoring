@@ -9,6 +9,17 @@ pipeline {
     }
     
     stages {
+        stage('Setup Node.js') {
+            steps {
+                sh '''
+                    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+                    apt-get install -y nodejs
+                    node --version
+                    npm --version
+                '''
+            }
+        }
+        
         stage('Checkout') {
             steps {
                 checkout scm
