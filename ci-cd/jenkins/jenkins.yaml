@@ -24,7 +24,7 @@ jenkins:
         templates:
           - labelString: "docker-agent"
             dockerTemplateBase:
-              image: "jenkins/agent:latest"
+              image: "jenkins-node-agent:latest"
               privileged: true
               user: "root"
               mounts:
@@ -32,8 +32,9 @@ jenkins:
             remoteFs: "/home/jenkins/agent"
             mode: EXCLUSIVE
             connector:
-              attach:
+              jnlp:
                 user: "root"
+                jenkinsUrl: "http://jenkins-master:8080"
             instanceCapStr: "10"
             removeVolumes: true
             pullStrategy: PULL_ALWAYS
