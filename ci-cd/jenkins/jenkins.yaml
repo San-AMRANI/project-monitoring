@@ -29,6 +29,7 @@ jenkins:
               user: "root"
               mounts:
                 - "type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock"
+              network: "ci-cd_jenkins-network"
             remoteFs: "/home/jenkins/agent"
             mode: EXCLUSIVE
             connector:
@@ -37,7 +38,7 @@ jenkins:
                 jenkinsUrl: "http://jenkins-master:8080"
             instanceCapStr: "10"
             removeVolumes: true
-            pullStrategy: PULL_ALWAYS
+            pullStrategy: PULL_NEVER
             pullTimeout: 300
 
 credentials:
