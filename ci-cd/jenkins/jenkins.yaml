@@ -24,7 +24,7 @@ jenkins:
         templates:
           - labelString: "docker-agent"
             dockerTemplateBase:
-              image: "jenkins/agent:latest"
+              image: "node:18-slim"
               privileged: true
               user: "root"
               mounts:
