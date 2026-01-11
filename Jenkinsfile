@@ -23,8 +23,10 @@ pipeline {
                         stage('Frontend: Install Dependencies') {
                             steps {
                                 dir('frontend') {
-                                    sh 'npm ci'
-                                    echo 'Frontend dependencies installed'
+                                    docker.image('node:18').inside {
+                                       sh 'npm ci'
+                                       echo 'Frontend dependencies installed'
+                                    }
                                 }
                             }
                         }
@@ -32,8 +34,10 @@ pipeline {
                         stage('Frontend: Build') {
                             steps {
                                 dir('frontend') {
-                                    sh 'docker build -t ${FRONTEND_IMAGE} .'
-                                    echo 'Frontend Docker image built'
+                                    docker.image('node:18').inside {
+                                       sh 'docker build -t ${FRONTEND_IMAGE} .'
+                                       echo 'Frontend Docker image built'
+                                    }
                                 }
                             }
                         }
@@ -41,7 +45,9 @@ pipeline {
                         stage('Frontend: Test') {
                             steps {
                                 dir('frontend') {
-                                    sh 'npm test || echo "No tests specified"'
+                                    docker.image('node:18').inside {
+                                       sh 'npm test '
+                                    }
                                 }
                             }
                         }
@@ -53,8 +59,10 @@ pipeline {
                         stage('Backend: Install Dependencies') {
                             steps {
                                 dir('backend') {
-                                    sh 'npm ci'
-                                    echo 'Backend dependencies installed'
+                                    docker.image('node:18').inside{
+                                       sh 'npm ci'
+                                       echo 'Backend dependencies installed'
+                                    }
                                 }
                             }
                         }
@@ -62,8 +70,10 @@ pipeline {
                         stage('Backend: Build') {
                             steps {
                                 dir('backend') {
+                                    docker.image('node:18').inside {
                                     sh 'docker build -t ${BACKEND_IMAGE} .'
                                     echo 'Backend Docker image built'
+                                    }
                                 }
                             }
                         }
@@ -71,7 +81,9 @@ pipeline {
                         stage('Backend: Test') {
                             steps {
                                 dir('backend') {
-                                    sh 'npm test || echo "No tests specified"'
+                                    docker.image('node:18').inside {
+                                       sh 'npm test '
+                                    }
                                 }
                             }
                         }
@@ -97,7 +109,8 @@ pipeline {
             echo 'Pipeline failed!'
         }
         always {
-            cleanWs()
+            echo 'Cleaning up workspace...'
+            deleteDir()
         }
     }
 }
