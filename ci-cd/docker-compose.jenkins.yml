@@ -12,6 +12,7 @@ services:
       - jenkins_home:/var/jenkins_home
       - ./jenkins/jenkins.yaml:/var/jenkins_home/jenkins.yaml
       - ./jobs.groovy:/var/jenkins_home/jobs.groovy
+      - ./kubeconfig:/var/jenkins_home/kubeconfig
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - CASC_JENKINS_CONFIG=/var/jenkins_home/jenkins.yaml

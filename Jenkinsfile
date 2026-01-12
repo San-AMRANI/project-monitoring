@@ -4,8 +4,11 @@ pipeline {
     }
     
     environment {
-        FRONTEND_IMAGE = "frontend:latest"
-        BACKEND_IMAGE = "backend:latest"
+        DOCKER_REGISTRY = 'sanamrani'  // Change to your Docker Hub username or private registry
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
+        FRONTEND_IMAGE = "${DOCKER_REGISTRY}/frontend:${IMAGE_TAG}"
+        BACKEND_IMAGE = "${DOCKER_REGISTRY}/backend:${IMAGE_TAG}"
+        KUBECONFIG = credentials('kubeconfig-credential-id')  // Add your kubeconfig credential ID in Jenkins
     }
     
     stages {
