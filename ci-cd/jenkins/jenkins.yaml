@@ -49,6 +49,11 @@ credentials:
               id: github-token
               secret: "${GITHUB_TOKEN}"
               scope: GLOBAL
+          - file:
+              id: kubeconfig-credential-id
+              fileName: kubeconfig
+              secretBytes: "${KUBECONFIG_CONTENT}"
+              scope: GLOBAL
 
 jobs:
   - file: /var/jenkins_home/jobs.groovy

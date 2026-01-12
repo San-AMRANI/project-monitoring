@@ -18,6 +18,7 @@ services:
       - CASC_JENKINS_CONFIG=/var/jenkins_home/jenkins.yaml
       - GITHUB_TOKEN=${GITHUB_TOKEN}
       - JENKINS_ADMIN_PASSWORD=${JENKINS_ADMIN_PASSWORD}
+      - KUBECONFIG_CONTENT=${KUBECONFIG_CONTENT}
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
     networks:
       - jenkins-network
