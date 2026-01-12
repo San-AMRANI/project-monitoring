@@ -4,11 +4,8 @@ pipeline {
     }
     
     environment {
-        DOCKER_REGISTRY = 'sanamrani'  // Change to your Docker Hub username or private registry
-        IMAGE_TAG = "${env.BUILD_NUMBER}"
-        FRONTEND_IMAGE = "${DOCKER_REGISTRY}/frontend:${IMAGE_TAG}"
-        BACKEND_IMAGE = "${DOCKER_REGISTRY}/backend:${IMAGE_TAG}"
-        KUBECONFIG = credentials('kubeconfig-credential-id')  // Add your kubeconfig credential ID in Jenkins
+        FRONTEND_IMAGE = "frontend:latest"
+        BACKEND_IMAGE = "backend:latest"
     }
     
     stages {
@@ -38,17 +35,6 @@ pipeline {
                                 dir('frontend') {
                                     sh 'docker build -t ${FRONTEND_IMAGE} .'
                                     echo 'Frontend Docker image built'
-                                }
-                            }
-                        }
-                        
-                        stage('Frontend: Push Image') {
-                            steps {
-                                script {
-                                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
-                                        sh 'docker push ${FRONTEND_IMAGE}'
-                                        echo 'Frontend image pushed to registry'
-                                    }
                                 }
                             }
                         }
@@ -83,17 +69,6 @@ pipeline {
                             }
                         }
                         
-                        stage('Backend: Push Image') {
-                            steps {
-                                script {
-                                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
-                                        sh 'docker push ${BACKEND_IMAGE}'
-                                        echo 'Backend image pushed to registry'
-                                    }
-                                }
-                            }
-                        }
-                        
                         stage('Backend: Test') {
                             steps {
                                 dir('backend') {
@@ -106,29 +81,10 @@ pipeline {
             }
         }
         
-        stage('Deploy to Kubernetes') {
+        stage('Deploy') {
             steps {
-                echo 'Deploying to Kubernetes cluster...'
-                sh '''
-                    # Update image tags in k8s manifests
-                    sed -i "s|image:.*backend.*|image: ${BACKEND_IMAGE}|g" k8s/backend-deployment.yaml
-                    sed -i "s|image:.*frontend.*|image: ${FRONTEND_IMAGE}|g" k8s/frontend-deployment.yaml
-                    
-                    # Apply Kubernetes manifests
-                    kubectl apply -f k8s/backend-deployment.yaml
-                    kubectl apply -f k8s/backend-service.yaml
-                    kubectl apply -f k8s/frontend-deployment.yaml
-                    kubectl apply -f k8s/frontend-service.yaml
-                    
-                    # Wait for rollout to complete
-                    kubectl rollout status deployment/backend -n default --timeout=5m
-                    kubectl rollout status deployment/frontend -n default --timeout=5m
-                    
-                    # Verify deployment
-                    kubectl get pods -n default
-                    kubectl get services -n default
-                '''
-                echo 'Application deployed successfully to Kubernetes'
+                sh 'docker compose up -d'
+                echo 'Application deployed with Docker Compose'
             }
         }
     }
@@ -142,7 +98,6 @@ pipeline {
         }
         always {
             echo 'Cleaning up workspace...'
-            deleteDir()
         }
     }
 }
